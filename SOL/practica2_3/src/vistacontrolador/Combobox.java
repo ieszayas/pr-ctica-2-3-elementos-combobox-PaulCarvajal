@@ -17,6 +17,15 @@ public class Combobox extends javax.swing.JFrame {
 
     public Combobox() {
         initComponents();
+        //modulos harcodeados para agregarlos directamente
+
+        modulos_matriculados.add("Programacion de Servicios y Procesos");
+        modulos_matriculados.add("Sistemas de Gestion Empresarial");
+        modulos_matriculados.add("Desarrollo de Interfaces");
+        modulos_matriculados.add("Programacion Multimedia");
+        modulos_matriculados.add("Acceso a Datos");
+        modulos_matriculados.add("Ingles");
+        modulos_matriculados.add("Empresas");
     }
 
     /**
@@ -32,6 +41,8 @@ public class Combobox extends javax.swing.JFrame {
         Añadir_Boton = new javax.swing.JButton();
         Campo_modulos = new javax.swing.JTextField();
         Modulos_Combobox = new javax.swing.JComboBox<>();
+        Agregar_Modulos = new javax.swing.JButton();
+        Borrar_Modulos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,6 +67,20 @@ public class Combobox extends javax.swing.JFrame {
             }
         });
 
+        Agregar_Modulos.setText("Agregar Todo");
+        Agregar_Modulos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Agregar_ModulosActionPerformed(evt);
+            }
+        });
+
+        Borrar_Modulos.setText("Borrar Todo");
+        Borrar_Modulos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Borrar_ModulosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -63,12 +88,17 @@ public class Combobox extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Añadir_Boton)
                     .addComponent(Texto_Modulos)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(Campo_modulos, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46)
-                        .addComponent(Modulos_Combobox, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Campo_modulos, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Añadir_Boton))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Modulos_Combobox, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(Borrar_Modulos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Agregar_Modulos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -81,8 +111,12 @@ public class Combobox extends javax.swing.JFrame {
                     .addComponent(Campo_modulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Modulos_Combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
-                .addComponent(Añadir_Boton)
-                .addGap(67, 67, 67))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Añadir_Boton)
+                    .addComponent(Agregar_Modulos))
+                .addGap(18, 18, 18)
+                .addComponent(Borrar_Modulos)
+                .addGap(26, 26, 26))
         );
 
         pack();
@@ -98,23 +132,60 @@ public class Combobox extends javax.swing.JFrame {
     }//GEN-LAST:event_Modulos_ComboboxActionPerformed
 
     private void Añadir_BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Añadir_BotonActionPerformed
-        
-        if (Modulos_Combobox == null) {
-            Modulos_Combobox.addItem(Campo_modulos.getText());
-            modulos_matriculados.add(Campo_modulos.getText());
-        } else {
-//            if(Modulos_Combobox.getItemListeners(Campo_modulos.getText()){
-//                JOptionPane.showMessageDialog(null, "Ya estas matriculado en ese modulo");
-//            }else{
-//                Modulos_Combobox.addItem(Campo_modulos.getText());
-//            }
-//        }
-
-        
-        reset();
+        //Controlado que el campo no este vacio
+        if (Campo_modulos.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No has introducido ningun modulo");
+            return;
         }
-        
+        //Cuando no existan modulos, introduce el primero sin revisar si existe
+        if (Modulos_Combobox.getItemCount() == 0) {
+            Modulos_Combobox.addItem(Campo_modulos.getText());
+            reset();
+        } else {
+            if (existe()) {
+                JOptionPane.showMessageDialog(null, "El modulo introducido ya existe");
+                reset();
+                return;
+            }
+            Modulos_Combobox.addItem(Campo_modulos.getText());
+            reset();
+        }
+
+
     }//GEN-LAST:event_Añadir_BotonActionPerformed
+
+    private void Agregar_ModulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Agregar_ModulosActionPerformed
+        //Si me creo los objetos aqui cada vez que borre todos los items se crearan dos veces
+        //meter cada elemento del arraylist al combobox
+        if (Modulos_Combobox.getItemCount() == 0) {
+            for (String it : modulos_matriculados) {
+                Modulos_Combobox.addItem(it);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "TuPTM");
+        }
+
+
+    }//GEN-LAST:event_Agregar_ModulosActionPerformed
+
+    private void Borrar_ModulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Borrar_ModulosActionPerformed
+        Modulos_Combobox.removeAllItems();
+    }//GEN-LAST:event_Borrar_ModulosActionPerformed
+
+    /**
+     * Comprueba que el modulo introducido no existe en el combobox
+     *
+     * @return
+     */
+    private boolean existe() {
+        for (int i = 0; i < Modulos_Combobox.getItemCount(); i++) {
+            if (Modulos_Combobox.getItemAt(i).equalsIgnoreCase(Campo_modulos.getText())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void reset() {
         Campo_modulos.setText("");
     }
@@ -152,7 +223,9 @@ public class Combobox extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Agregar_Modulos;
     private javax.swing.JButton Añadir_Boton;
+    private javax.swing.JButton Borrar_Modulos;
     private javax.swing.JTextField Campo_modulos;
     private javax.swing.JComboBox<String> Modulos_Combobox;
     private javax.swing.JLabel Texto_Modulos;
