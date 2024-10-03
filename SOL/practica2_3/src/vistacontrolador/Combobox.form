@@ -4,6 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="Combobox_Modulos"/>
+    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -87,7 +88,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="Texto_Modulos">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Introduzca el nombre de los m&#xf3;dulos y el curso que estas matriculado:"/>
+        <Property name="text" type="java.lang.String" value="Escriba el nombre de los m&#xf3;dulos y el curso que estas matriculado:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="A&#xf1;adir_Boton">
@@ -148,7 +149,7 @@
     <Component class="javax.swing.JButton" name="Borrar_uno_boton">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="2" name="C:\Users\Paul\Documents\GitHub\pr-ctica-2-3-elementos-combobox-PaulCarvajal\SOL\practica2_3\src\vistacontrolador\trash.png"/>
+          <Image iconType="3" name="/vistacontrolador/trash.png"/>
         </Property>
       </Properties>
       <Events>

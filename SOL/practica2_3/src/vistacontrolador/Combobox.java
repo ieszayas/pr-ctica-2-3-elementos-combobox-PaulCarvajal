@@ -6,6 +6,8 @@ package vistacontrolador;
 
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 /**
  *
@@ -37,6 +39,7 @@ public class Combobox extends javax.swing.JFrame {
         modulos_DAM1.add("Lenguaje de Marcas");
         modulos_DAM1.add("Bases de Datos");
         modulos_DAM1.add("Entornos de Desarrollo");
+
     }
 
     /**
@@ -59,8 +62,9 @@ public class Combobox extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Combobox_Modulos");
+        setResizable(false);
 
-        Texto_Modulos.setText("Introduzca el nombre de los módulos y el curso que estas matriculado:");
+        Texto_Modulos.setText("Escriba el nombre de los módulos y el curso que estas matriculado:");
 
         Añadir_Boton.setText("Añadir");
         Añadir_Boton.addActionListener(new java.awt.event.ActionListener() {
@@ -101,7 +105,7 @@ public class Combobox extends javax.swing.JFrame {
             }
         });
 
-        Borrar_uno_boton.setIcon(new javax.swing.ImageIcon("C:\\Users\\Paul\\Documents\\GitHub\\pr-ctica-2-3-elementos-combobox-PaulCarvajal\\SOL\\practica2_3\\src\\vistacontrolador\\trash.png")); // NOI18N
+        Borrar_uno_boton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vistacontrolador/trash.png"))); // NOI18N
         Borrar_uno_boton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Borrar_uno_botonActionPerformed(evt);
@@ -173,23 +177,18 @@ public class Combobox extends javax.swing.JFrame {
     private void Añadir_BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Añadir_BotonActionPerformed
         //Controlado que el campo no este vacio
         if (Campo_modulos.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No has introducido ningun modulo");
+            JOptionPane.showMessageDialog(null, "No has introducido ningun modulo", "ERROR", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        //Cuando no existan modulos, introduce el primero sin revisar si existe
-        if (Modulos_Combobox.getItemCount() == 0) {
-            Modulos_Combobox.addItem(Campo_modulos.getText());
+
+        //Cuando el modulo ya existe manda un mensaje
+        if (existeModulo()) {
+            JOptionPane.showMessageDialog(null, "El modulo introducido ya existe", "ERROR", JOptionPane.WARNING_MESSAGE);
             reset();
-        } else {
-            //Cuando el modulo ya existe manda un mensaje
-            if (existeModulo()) {
-                JOptionPane.showMessageDialog(null, "El modulo introducido ya existe");
-                reset();
-                return;
-            }
-            Modulos_Combobox.addItem(Campo_modulos.getText());
-            reset();
+            return;
         }
+        Modulos_Combobox.addItem(Campo_modulos.getText());
+        reset();
 
 
     }//GEN-LAST:event_Añadir_BotonActionPerformed
@@ -197,35 +196,39 @@ public class Combobox extends javax.swing.JFrame {
     private void Agregar_ModulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Agregar_ModulosActionPerformed
         //Si me creo los objetos aqui cada vez que borre todos los items se crearan dos veces
         //meter cada elemento del arraylist al combobox
-        if (Modulos_Combobox.getItemCount() == 0) {
-            if (Curso_Combobox.getSelectedItem() == "DAM1") {
-                for (String it : modulos_DAM1) {
-                    Modulos_Combobox.addItem(it);
-                }
-            }else {
-                for (String it : modulos_DAM2) {
-                    Modulos_Combobox.addItem(it);
-                }
-            }
 
-        } else {
-            JOptionPane.showMessageDialog(null, "Ya has agregado todos los modulos");
+        //si le das volver a agregar no te deja
+        if (!comboboxVacio()) {
+            JOptionPane.showMessageDialog(null, "Ya has agregado todos los modulos, borralos antes de agregarlos todos", "ERROR", JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
+        //Agregar cursos depende DAM1 o DAM2
+        if (Curso_Combobox.getSelectedItem() == "DAM1") {
+            for (String it : modulos_DAM1) {
+                Modulos_Combobox.addItem("DAM1: - " + it);
+            }
+        } else {
+            Modulos_Combobox.removeAllItems();
+            for (String it : modulos_DAM2) {
+                Modulos_Combobox.addItem("DAM2: - " + it);
+            }
+        }
 
     }//GEN-LAST:event_Agregar_ModulosActionPerformed
 
     private void Borrar_ModulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Borrar_ModulosActionPerformed
-        if(Modulos_Combobox.getItemCount() == 0){
-            JOptionPane.showMessageDialog(null, "No existe ningun modulo para borrar");
+        if (comboboxVacio()) {
+            JOptionPane.showMessageDialog(null, "No existe ningun modulo para borrar", "ERROR", JOptionPane.WARNING_MESSAGE);
             return;
         }
         Modulos_Combobox.removeAllItems();
+        
     }//GEN-LAST:event_Borrar_ModulosActionPerformed
 
     private void Borrar_uno_botonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Borrar_uno_botonActionPerformed
-        if(Modulos_Combobox.getItemCount() == 0){
-            JOptionPane.showMessageDialog(null, "No existe ningun modulo para borrar");
+        if (comboboxVacio()) {
+            JOptionPane.showMessageDialog(null, "No existe ningun modulo para borrar", "ERROR", JOptionPane.WARNING_MESSAGE);
             return;
         }
         Modulos_Combobox.removeItem(Modulos_Combobox.getSelectedItem());
@@ -249,9 +252,16 @@ public class Combobox extends javax.swing.JFrame {
         }
         return false;
     }
-  
+
     private void reset() {
         Campo_modulos.setText("");
+    }
+
+    private boolean comboboxVacio() {
+        if (Modulos_Combobox.getItemCount() == 0) {
+            return true;
+        }
+        return false;
     }
 
     public static void main(String args[]) {
@@ -281,6 +291,14 @@ public class Combobox extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                try {
+                    //UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+                    //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                    //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 new Combobox().setVisible(true);
             }
         });
